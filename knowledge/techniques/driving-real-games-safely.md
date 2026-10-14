@@ -73,7 +73,8 @@ Whenever the agent sends input to a real game window.
      frame.
    - **Fix:** send down, sleep ~80 ms, send up.
 10. **Enter works but arrow keys don't.** (2026-10-12.) **Cause:** arrows/navigation keys need
-    `KEYEVENTF_EXTENDEDKEY` (0x1). **Fix:** set it for VK 0x21–0x28 (as `um win drive` does).
+    `KEYEVENTF_EXTENDEDKEY` (0x1). **Fix:** set it for VK 0x21–0x28, Insert (0x2D), Delete (0x2E) and the right
+    Ctrl/Alt (0xA3, 0xA5), as `um win drive` does.
 11. **`SetForegroundWindow` silently fails for a freshly launched game.** **Cause:** Windows' foreground lock.
     **Fix:** tap Alt via `SendInput`/`keybd_event` right before it; never type if focus still isn't yours.
 12. **Menu lists wrap and open on the most recent entry.** (2026-10-12, EO2 HD save list.) "Up ×12 to reach

@@ -8,13 +8,13 @@ platform: windows
 engine: unity-il2cpp
 route: managed-patch
 tools: ["BepInEx 6.0.0-be.788 (Unity.IL2CPP win-x64)", "Il2CppInterop 1.5.3 (patched)", "Il2CppDumper 6.7.46", ".NET 8 SDK", "Harmony"]
-anti_cheat: "none (single-player); Steam DRM only, lab copy run with steam_appid.txt"
+anti_cheat: "none (single-player). Both games ship with Denuvo (Steam store DRM notice); it stays in place and is never unpacked or removed. The lab copy runs with steam_appid.txt through the owning Steam account"
 status: in-progress
 agents: ["Claude Code (Opus 5.5)"]
 humans: []
 date: 2026-10-12
 links: []
-tags: [bepinex, il2cpp, protected-gameassembly, il2cppinterop, addressables, cross-game, mashup, harmony, save-redirect]
+tags: [bepinex, il2cpp, protected-gameassembly, denuvo, il2cppinterop, addressables, cross-game, mashup, harmony, save-redirect]
 ---
 
 # Etrian Odyssey 1's labyrinth and battles running inside Etrian Odyssey 2 HD
@@ -23,24 +23,32 @@ tags: [bepinex, il2cpp, protected-gameassembly, il2cppinterop, addressables, cro
 > EO2's systems: EO1's floors, events, text, world state and enemies run inside EO2's engine. Verified in game
 > by screenshots (walking EO1's first floor, EO1 town/quest events, a won battle against EO1 monsters). The
 > hard parts were getting BepInEx to start at all on EO2's protected GameAssembly, and loading a second game's
-> Addressables catalog without breaking the host.
+> Addressables catalog without breaking the host. The protection stays in place throughout: the game unpacks its
+> own code at run time, and the plugin side only follows the resulting jump stubs in the running process.
 
 ## Setup
 - Windows 11, Steam installs of both games. Both are Unity 2020.3.1f1 IL2CPP, metadata v27, Addressables with
   JSON `catalog.json`.
-- Lab copy of the game folder + `steam_appid.txt` (never the Steam install). BepInEx 6.0.0-be.788
-  Unity.IL2CPP win-x64 unzipped into it. .NET 8 SDK (user-local `dotnet-install.ps1`). Il2CppDumper 6.7.46
-  (.NET Framework build) for reading types.
+- Lab copy of the game folder + `steam_appid.txt` (never the Steam install). Steam still has to be running and
+  signed in to the account that owns both games: the file only lets the copy start outside the library, and
+  changes nothing about ownership or DRM. BepInEx 6.0.0-be.788 Unity.IL2CPP win-x64 unzipped into it. .NET 8
+  SDK (user-local `dotnet-install.ps1`). Il2CppDumper 6.7.46 (.NET Framework build) for reading types.
 
 ## Route and why
 `managed-patch`: Harmony patches on existing game methods from a BepInEx plugin. Both games share ~8,466
 script types, so the host engine already contains almost every code path the guest needs; the work is
 feeding it the guest's data and assets. Full reimplementation would have been far larger.
+- In the terms of [`choosing-a-mashup-route.md`](../../techniques/choosing-a-mashup-route.md), this is content
+  ported into a sibling host, loaded from the user's own guest install at run time. The closest earlier case is
+  [Pre-Sequel assets in Borderlands 2](../../techniques/loading-pre-sequel-assets-in-borderlands-2.md), also two
+  games on one engine branch.
 
 ## How the game works (what we had to learn)
-- **Protected GameAssembly.dll (EO2):** scrambled section names, a ~300 MB `.link` section, and every il2cpp
-  export is a stub `call <spin-wait-until-unpacked>; jmp <thunk>` with `thunk: jmp <real body>`. Some exports
-  have their callee inlined (`il2cpp_field_static_get_value` contains `Field::StaticGetValue`).
+- **Protected GameAssembly.dll (EO2):** both games' Steam pages list Denuvo. EO2's GameAssembly has scrambled
+  section names, a ~300 MB `.link` section, and every il2cpp export is a stub
+  `call <spin-wait-until-unpacked>; jmp <thunk>` with `thunk: jmp <real body>`. Some exports have their callee
+  inlined (`il2cpp_field_static_get_value` contains `Field::StaticGetValue`). Nothing in this note unpacks,
+  dumps or removes the protection.
 - **Interop namespaces** are real C# namespaces that Il2CppDumper's dump.cs doesn't show (`Master.MasterManager`,
   `MasterData.MasterDataTypes`, `Common.TextLabelDataManager`, `DungeonData.*`, `EventScript.EventObjCombine`).
   Obfuscated member names (BB obfuscator) differ between the two games' builds.
