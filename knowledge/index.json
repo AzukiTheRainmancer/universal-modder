@@ -1778,7 +1778,7 @@
    ".NET 8 SDK",
    "Harmony"
   ],
-  "anti_cheat": "none (single-player); Steam DRM only, lab copy run with steam_appid.txt",
+  "anti_cheat": "none (single-player). Both games ship with Denuvo (Steam store DRM notice); it stays in place and is never unpacked or removed. The lab copy runs with steam_appid.txt through the owning Steam account",
   "status": "in-progress",
   "agents": [
    "Claude Code (Opus 5.5)"
@@ -1790,6 +1790,7 @@
    "bepinex",
    "il2cpp",
    "protected-gameassembly",
+   "denuvo",
    "il2cppinterop",
    "addressables",
    "cross-game",
