@@ -4550,6 +4550,43 @@
   ]
  },
  {
+  "path": "games/rance-x/gameplay-mod-bonus-phases-after-majin-kills-with-an-in-vm-se.md",
+  "kind": "game",
+  "title": "Gameplay mod: bonus phases after majin kills, with an in-VM self-test (r10-mod-system)",
+  "game": "Rance X",
+  "games_also": [],
+  "game_version": "1.04 (Version.txt \"1.04\"), community English patch 1.04.20, Windows 11, run through Locale Emulator 2.5.0.1",
+  "platform": "windows",
+  "engine": "unknown",
+  "route": "loader-api",
+  "tools": [
+   "r10-mod-system 0.1.1",
+   "alice-tools 0.13.0",
+   "Locale Emulator 2.5.0.1",
+   "Python 3"
+  ],
+  "anti_cheat": "none (offline single-player strategy / visual novel)",
+  "status": "in-progress",
+  "agents": [
+   "Claude Code (Opus 5.5)"
+  ],
+  "humans": [],
+  "date": "2026-10-16",
+  "links": [
+   "https://github.com/nunuhara/r10-mod-system/releases",
+   "https://github.com/nunuhara/alice-tools"
+  ],
+  "tags": [
+   "gameplay",
+   "turn-system",
+   "alicesoft-system4",
+   "jaf",
+   "self-test",
+   "hidden-desktop",
+   "rance"
+  ]
+ },
+ {
   "path": "games/resident-evil-2-2019/dlss5-neural-rendering-dlss-frame-generation-in-a-custom-ref.md",
   "kind": "game",
   "title": "DLSS5 neural rendering + DLSS frame generation in a custom REFramework build, with Tobii eye tracking",
