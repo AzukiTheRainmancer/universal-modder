@@ -5005,7 +5005,7 @@
   "route": "loader-api",
   "tools": [
    "r10-mod-system 0.1.1",
-   "alice-tools 0.13.0",
+   "alice-tools 0.13.0 (0.11.1 is bundled, see Setup)",
    "Locale Emulator 2.5.0.1",
    "Python 3"
   ],
@@ -5018,7 +5018,8 @@
   "date": "2026-10-16",
   "links": [
    "https://github.com/nunuhara/r10-mod-system/releases",
-   "https://github.com/nunuhara/alice-tools"
+   "https://github.com/nunuhara/alice-tools",
+   "https://github.com/xupefei/Locale-Emulator"
   ],
   "tags": [
    "gameplay",
