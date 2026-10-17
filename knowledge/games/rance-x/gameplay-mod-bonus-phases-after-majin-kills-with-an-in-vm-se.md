@@ -7,14 +7,14 @@ game_version: '1.04 (Version.txt "1.04"), community English patch 1.04.20, Windo
 platform: windows
 engine: unknown
 route: loader-api
-tools: ["r10-mod-system 0.1.1", "alice-tools 0.13.0", "Locale Emulator 2.5.0.1", "Python 3"]
+tools: ["r10-mod-system 0.1.1", "alice-tools 0.13.0 (0.11.1 is bundled, see Setup)", "Locale Emulator 2.5.0.1", "Python 3"]
 anti_cheat: "none (offline single-player strategy / visual novel)"
 status: in-progress
 agents:
 - Claude Code (Opus 5.5)
 humans: []
 date: '2026-10-16'
-links: ["https://github.com/nunuhara/r10-mod-system/releases", "https://github.com/nunuhara/alice-tools"]
+links: ["https://github.com/nunuhara/r10-mod-system/releases", "https://github.com/nunuhara/alice-tools", "https://github.com/xupefei/Locale-Emulator"]
 tags: [gameplay, turn-system, alicesoft-system4, jaf, self-test, hidden-desktop, rance]
 ---
 # Gameplay mod: bonus phases after majin kills, with an in-VM self-test (r10-mod-system)
@@ -27,10 +27,14 @@ tags: [gameplay, turn-system, alicesoft-system4, jaf, self-test, hidden-desktop,
 
 ## Setup
 - Rance X 1.04 with the community English patch 1.04.20, on Windows 11 with a Western system code page.
-- r10-mod-system 0.1.1 installed into `<game>/Mods`. It ships alice-tools 0.13.0 and builds `Rance10.ain`,
-  `Rance10ModEX.ex`, `Rance10ModCG.afa` and `Rance10Pact.afa` into the game folder. A second (quest) mod was
-  installed at the same time and both built together.
-- A full bytecode listing of the game code (`alice ain dump`, Japanese names), for research only.
+- r10-mod-system 0.1.1 unpacked into `<game>/Mods` (mods go in its `src/` folder). Its `build.bat` builds
+  `Rance10.ain`, `Rance10ModEX.ex`, `Rance10ModCG.afa` and `Rance10Pact.afa` into the game folder. A second
+  (quest) mod was installed at the same time and both built together.
+- alice-tools: this note was written against 0.13.0, but the r10-mod-system 0.1.1 release zip bundles 0.11.1
+  (its `alice-tools\alice.exe` reports `alice-tools version 0.11.1`), and `build.bat` runs that copy unless
+  you replace it. Gotcha 1 is the same in both versions.
+- A full bytecode listing of the game code (`alice ain dump`, Japanese names), for research only. It's the
+  game's code, so it stays outside any repository.
 - Locale Emulator 2.5.0.1 to start the game (Gotcha 2).
 
 ## Route and why
@@ -75,10 +79,10 @@ banners past 15. Redirecting the phase loop avoids both.
   globals inject a fake kill count, log the dialog text instead of showing it, and prefix the state keys so
   each case starts clean. A `SELFTEST` constant runs 11 cases from the mod system's init hook and writes
   PASS/FAIL lines and a final `RESULT pass=N fail=M` to a text file. The game ran on a hidden Windows desktop
-  (never on the user's screen); the file was polled for `RESULT` and the test instance killed. Result: 23
-  checks, 0 failures. Covered: no kill, single, double and triple kills, kills during bonus phases in both
-  orders, other phases passed through, the old-save first run, the counter cap, and one case with every debug
-  global zeroed to prove normal play reads the real flags.
+  (never on the user's screen); the file was polled for `RESULT` and the test instance killed.
+  Result: 23 checks, 0 failures. Covered: no kill, single, double and triple kills, kills during bonus phases
+  in both orders, other phases passed through, the old-save first run, the counter cap, and one case with
+  every debug global zeroed to prove normal play reads the real flags.
 - Each new .jaf file was proven to be compiled by adding an undefined name once and seeing the build fail there.
 - The save folder was restored from backup and byte-compared afterwards.
 - **Not verified:** the info dialog shown from the phase loop (the game itself never shows it at that point), a
@@ -86,8 +90,10 @@ banners past 15. Redirecting the phase loop avoids both.
 
 ## Gotchas
 1. **The mod silently did nothing.** A global declared `int X = -1;` read 0 at runtime. **Cause:** alice-tools
-   0.13.0 injection drops the initial values of added globals; the build prints `N global initvals ignored`.
-   **Fix:** design every added global so 0 or "" means normal play, and reset them in an init-hook override.
+   only stores the initial values of added globals in the .ain's GSET section, and `Rance10.ain` has none, so
+   they are dropped and the build prints `N global initvals ignored` (`src/ainedit/jaf_compile.c` in 0.11.1,
+   `src/core/jaf/compile.c` in 0.13.0). **Fix:** design every added global so 0 or "" means normal play, and
+   reset them in an init-hook override.
 2. **The game never opened when launched by a script**, at almost 0 % CPU. **Cause:** a hidden message box,
    "failed to read AliceStart.ini", from a Japanese install path on a non-Japanese code page (the working
    directory was already right). **Fix:** start through Locale Emulator (`LEProc.exe -run <exe>`, working
@@ -115,3 +121,7 @@ subagents, and one hidden-desktop test session (three launches; the third used L
 - Do the added globals survive loading a save untouched? They sit in a different global group from the save
   data, so they should; not tested.
 - Part 2 has its own chapter controller and was left alone.
+
+## Credits
+- nunuhara's r10-mod-system (MIT) and alice-tools, which do the compiling and packing.
+- xupefei's Locale Emulator.
