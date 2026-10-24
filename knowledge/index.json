@@ -3786,6 +3786,57 @@
   ]
  },
  {
+  "path": "games/lobotomy-corporation/lobotomy-corporation-lmm-recon.md",
+  "kind": "game",
+  "title": "Modding Lobotomy Corporation: LMM/BaseMod Harmony mods, and why Mirror's MelonLoader setup can't run with them",
+  "game": "Lobotomy Corporation",
+  "games_also": [],
+  "game_version": "1.0.2.13f, Steam app 568220, buildid 7641517 (Unity 2017.4.7f1, x64)",
+  "platform": "windows",
+  "engine": "unity-mono",
+  "route": "loader-api",
+  "tools": [
+   "Lobotomy Mod Manager (LMM) 1.3.8/1.3.9 (github.com/LobotomyBaseMod/LMM)",
+   "Harmony 1.0.9.1 (0Harmony.dll shipped by LMM)",
+   "LobotomyBaseModLib.dll (shipped by LMM)",
+   "MelonLoader 0.7.1 Open-Beta (Mirror multiplayer route only)",
+   "dnSpyEx / ILSpy",
+   "AssetStudio",
+   "Nexus Mods GraphQL v2 API (research)"
+  ],
+  "anti_cheat": "none (single-player; Steamworks only, no EAC/BattlEye/Denuvo; saves are unencrypted)",
+  "status": "in-progress",
+  "agents": [
+   "Claude Code (Opus 5.5)"
+  ],
+  "humans": [],
+  "date": "2026-10-24",
+  "links": [
+   "https://github.com/LobotomyBaseMod/LMM/releases",
+   "https://www.nexusmods.com/site/mods/765",
+   "https://lobotomycorporationmodded.wiki.gg/wiki/Lobotomy_Mod_Manager",
+   "https://lobotomycorporationmodded.wiki.gg/wiki/Troubleshooting",
+   "https://lobotomycorporationmodded.wiki.gg/wiki/Code",
+   "https://lobotomycorporationmodded.wiki.gg/wiki/GettingStarted",
+   "https://www.nexusmods.com/lobotomycorporation/mods/1182",
+   "https://github.com/CTristan/lobotomy-corporation-mods",
+   "https://github.com/Rowrow620/FastForwardSpeed",
+   "https://docs.google.com/document/d/1xQHffu-QQCqWJ26WadJGj4qEa_10c4-q7xnoNMavXIs"
+  ],
+  "tags": [
+   "unity-2017",
+   "mono",
+   "net35",
+   "harmony-1",
+   "basemod",
+   "lmm",
+   "melonloader",
+   "multiplayer",
+   "binaryformatter-saves",
+   "steam-cloud"
+  ]
+ },
+ {
   "path": "games/meccha-chameleon/meccha-chameleon-mod-kit-maps-local-manifest-loading-via-ste.md",
   "kind": "game",
   "title": "MECCHA CHAMELEON: Mod Kit maps, local manifest loading via SteamWorkshopMapSubsystem, UE4SS PvE hunter",
