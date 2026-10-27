@@ -8,7 +8,7 @@ platform: windows
 engine: unity-mono
 route: loader-api
 tools:
-- Lobotomy Mod Manager (LMM) 1.3.8/1.3.9 (github.com/LobotomyBaseMod/LMM)
+- Lobotomy Mod Manager (LMM) 1.3.8/1.3.9 (abcdcode, kygi123, tinue)
 - Harmony 1.0.9.1 (0Harmony.dll shipped by LMM)
 - LobotomyBaseModLib.dll (shipped by LMM)
 - MelonLoader 0.7.1 Open-Beta (Mirror multiplayer route only)
@@ -22,8 +22,6 @@ agents:
 humans: []
 date: '2026-10-24'
 links:
-- https://github.com/LobotomyBaseMod/LMM/releases
-- https://www.nexusmods.com/site/mods/765
 - https://lobotomycorporationmodded.wiki.gg/wiki/Lobotomy_Mod_Manager
 - https://lobotomycorporationmodded.wiki.gg/wiki/Troubleshooting
 - https://lobotomycorporationmodded.wiki.gg/wiki/Code
@@ -59,10 +57,12 @@ tags:
 - **Engine/runtime** (from the MelonLoader log on that install): `Unity Version: 2017.4.7f1`,
   `Game Type: MonoBleedingEdge`, `Runtime Type: net35`, x64. `boot.config` has no `scripting-runtime-version`,
   so the game uses the legacy 3.5 scripting profile. There is no `GameAssembly.dll`, so it is not IL2CPP.
-- **LMM:** the GitHub releases are `Update1.3.5` (2024-12-02) through `Update1.3.9` (2025-09-27), each with
+- **LMM:** 21 GitHub releases, from `Update` (2024-03-16) to `Update1.3.9` (2025-09-27), each with
   `Lobotomy.Mod.Manager.<ver>.zip` and `Updater.<ver>.zip`. The inspected copy contains only the string `1.3.8`.
   LMM is a separate Unity app (`LobotomyModManager.exe`) that runs from its own folder, outside the game, and it
-  needs Steam running to find the game path.
+  needs Steam running to find the game path. The download carries a modified copy of the game's
+  `Assembly-CSharp.dll` and some of its story and stat files (`LobotomyModManager_Data/PatchFiles/`), so this
+  note links the community wiki's LMM page instead of the download, and a mod you publish never includes those.
 - **What LMM puts in `LobotomyCorp_Data/Managed/`:** a patched `Assembly-CSharp.dll` (4,318,208 bytes, versus
   4,164,096 bytes vanilla), `0Harmony.dll` (FileVersion **1.0.9.1**), `LobotomyBaseModLib.dll`, `NAudio.dll`,
   `Facepunch.Steamworks.Win64.dll`, `steam_api64.dll`, and a `BaseMod/` folder. That folder holds `BackUp.dll`
@@ -74,13 +74,16 @@ tags:
   and optionally `LobotomyBaseModLib`, all with `Private=false`.
 
 ## Route and why
-- **loader-api through LMM.** About 980 Nexus mods target BaseMod/LMM, the LMM tool is maintained, and the wiki
-  documents it. LMM continues abcdcode's BaseMod (5.x). It supersedes the Nexus "Basemod" v4.13 page (mod 2),
-  which someone else uploaded in 2020 and which is very outdated.
+- **loader-api through LMM.** Nexus lists about 980 mods for the game, the LMM tool is maintained (by abcdcode,
+  kygi123 and tinue, per the wiki), and the wiki documents it. LMM continues abcdcode's BaseMod (5.x). It
+  supersedes the Nexus "Basemod" v4.13 page (mod 2), which another user uploaded in 2019 (last updated 2020) and
+  which is very outdated.
 - **Not plain BepInEx/MelonLoader** for normal mods: none of the content mods would load. MelonLoader 0.7.1 is
   only worth it for the **Mirror** multiplayer mod (Nexus 1182, v0.06ex2, 2026-10-16). Mirror rewrites large
   parts of the game for netcode. Its FAQ says BaseMod mods do not work with it, and it asks you to remove
   BaseMod's `0Harmony.dll` and verify the game files first. Mirror-compatible ports are shared on its Discord.
+  In a Mirror lobby a gameplay mod changes the game for everyone in it, so use one only in a lobby you host,
+  with friends who agreed and run the same mods.
 - **Not assembly replacement** (shipping a whole edited `Assembly-CSharp.dll`). LMM rewrites the assembly on
   every launch, and the wiki lists replacements (Kaizo Corp, an older Memory Leak Fix) as incompatible.
 
@@ -96,12 +99,13 @@ tags:
   `Info/GlobalInfo.xml` holds `<ID>`, and `Info/<lang>/Info.xml` holds the name and descriptions. Mods without
   info show as "Unknown", which does no harm. Load order is the order in `BaseModList_v2.xml`, set by dragging
   mods in LMM.
-- **Content folders** a mod can carry (Ziv's doc): `Creature/` (CreatureGen, CreatureInfo/<lang>, CreatureList,
-  Creatures stats, Portrait 256×256), `CreatureAnimation/` (Spine exports renamed `atlas.txt` + `json.txt`,
-  loaded as `Custom/<name>`), `AgentAnimation/`, `Equipment/` (Sprite, txts, xmls/<lang>), `BaseModAudioClip/`,
-  `BaseModAssetBundle/`, `BaseModImage/`, `Localize/<lang>/`. An Abnormality's behaviour is a class deriving
-  from `CreatureBase`, and its name must match the `<script>` value in the stat file. Equipment IDs share the
-  Abnormality ID's digits, with a type prefix: 2 for weapon, 3 for armor, 4 for gift.
+- **Content folders** a mod can carry (Ziv's Modding Documentation): `Creature/` (CreatureGen,
+  CreatureInfo/<lang>, CreatureList, Creatures stats, Portrait 256×256), `CreatureAnimation/` (Spine exports
+  renamed `atlas.txt` + `json.txt`, loaded as `Custom/<name>`), `AgentAnimation/`, `Equipment/` (Sprite, txts,
+  xmls/<lang>), `BaseModAudioClip/`, `BaseModAssetBundle/`, `BaseModImage/`, `Localize/<lang>/`. An
+  Abnormality's behaviour is a class deriving from `CreatureBase`, and its name must match the `<script>` value
+  in the stat file. Equipment IDs share the Abnormality ID's digits, with a type prefix: 2 for weapon, 3 for
+  armor, 4 for gift.
 - **Vanilla data:** gameplay data is TextAsset XML inside `resources.assets`: about 303 `<?xml` documents, with
   301 `<creature` and 448 `<equipment` tags. The code loads them by names such as `xml/CreatureList`,
   `xml/creatureStats/…`, `xml/CreatureGenInfo`, `xml/Equipment/Equipment`, `xml/Research` and
@@ -145,7 +149,7 @@ tags:
 4. Deploy to `LobotomyCorp_Data/BaseMods/MyFirstMod/MyFirstMod.dll` with `Info/GlobalInfo.xml` and
    `Info/en/Info.xml`. Always launch through LMM. Quit with **Options → Quit Game**, because only that exit
    makes LMM's save backup (`Managed\BaseMod\BackUp`).
-5. Compare with the readable sources: `Rowrow620/FastForwardSpeed` (about 40 lines) and
+5. Compare with the readable sources: `Rowrow620/FastForwardSpeed` (under 50 lines) and
    `CTristan/lobotomy-corporation-mods` (MIT, net35, unit-tested patches, shared common package).
 
 ## Verification
@@ -181,7 +185,9 @@ tags:
    and LMM regenerates it (wiki Troubleshooting).
 7. **A mod works for some players only.** **Cause:** it needs the old unofficial `12Harmony.dll` (from BaseMod
    5.2.1), which some installs still have and others don't. **Fix:** for private members, depend on
-   `LobotomyBaseModLib.dll` (always installed by LMM) instead.
+   `LobotomyBaseModLib.dll` (always installed by LMM) instead: its `ExtenionUtil_Lib` extension methods
+   (`GetFieldValue<T>`, `SetFieldValue`, `Invoke`) reach them by reflection. The wiki's other fix is to ship
+   `12Harmony.dll` in your mod's folder.
 8. **A research snapshot of the install went stale.** **Cause:** the human was switching loaders (MelonLoader
    removed, LMM patched in) while the agent was hashing files, and `Assembly-CSharp.dll` changed size between
    two reads a few minutes apart. **Fix:** list the mtimes of `Managed/` and the game root before drawing
@@ -193,15 +199,23 @@ tags:
 
 ## Assets
 None made. For reference: art is extracted with AssetStudio from `resources.assets`/`sharedassets*.assets`.
+Extracted art stays on your machine; a published mod carries its own art.
 Abnormality animations are Spine 2D (the trial version cannot export). Audio is `.mp3` in `BaseModAudioClip/`.
 AssetBundles need the Unity **2017.4.7f1** editor (Ziv's doc says it needs modification to build them).
+
+## Credits
+- Lobotomy Mod Manager and BaseMod: abcdcode, with kygi123 and tinue maintaining LMM (per the community wiki).
+- Mirror multiplayer mod: Clair (Clairidze on Nexus).
+- Ziv's Modding Documentation (the Google Doc in `links`) and the Lobotomy Corporation Modded wiki on wiki.gg.
+- CTristan's `lobotomy-corporation-mods` and Rowrow620's `FastForwardSpeed` (both MIT), the readable sources in
+  Build step 5.
 
 ## Cost and time
 About one session of research: web, GitHub API, Nexus API and read-only local inspection. No API spend.
 
 ## Open questions
 - Build and load the minimal `Harmony_Patch` mod in game to confirm the net35 build steps and the entry rule
-  (decompile the patched assembly's loader).
+  (decompile the patched assembly's loader; the wiki's Code page names `Add_On` as the class that loads mods).
 - The console hotkey and command list (`ConsoleScript` / `ConsoleCommand_Mod`).
 - A save editor: deserialize the BinaryFormatter `.dat` files outside the game, with `Assembly-CSharp.dll`
   referenced for the game types.
